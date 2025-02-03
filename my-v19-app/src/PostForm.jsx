@@ -1,4 +1,5 @@
 import {useActionState} from "react";
+import {useFormStatus} from "react-dom";
 
 async function submitPost(prevState, formData){
     const title = formData.get("title");
@@ -17,8 +18,27 @@ async function submitPost(prevState, formData){
     }
 }
 
+function SubmitFormBtn(){
+    const { pending } = useFormStatus();
+    return (
+        <button type="submit" className="mt-2" disabled={pending}>
+            {pending ? "Submitting..." : "Submit Post"}
+        </button>
+    );
+}
+
+function PublishBtn() {
+    const { pending } = useFormStatus();
+    return (
+        <button type="cancel" className="mt-2" disabled={pending}>
+            {pending ? "Publishing..." : "Publish Post"}
+        </button>
+    );
+}
+
 function PostForm() {
     const [{success, error}, formAction, isPending] = useActionState(submitPost, {success: null, error: null});
+    
 
     return (
         <form action={formAction}>
@@ -35,9 +55,8 @@ function PostForm() {
                 name="body"
                 required
             />
-            <button type="submit" className="mt-2" disabled={isPending}>
-                {isPending ? "Submitting..." : "Submit Post"}
-            </button>
+            <SubmitFormBtn />
+            <PublishBtn />
             {error && <p style={{ color: "red" }}>{error}</p>}
             {success && <p style={{ color: "green" }}>{success}</p>}
         </form>
