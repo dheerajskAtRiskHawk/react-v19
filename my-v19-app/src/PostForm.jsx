@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 function PostForm() {
     const [title, setTitle] = useState("");
     const [body, setBody] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [loading, startTransition] = useTransition(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
     async function handleSubmit(event) {
         event.preventDefault();
-        setLoading(true);
         setError(null);
         setSuccess(null);
 
+        startTransition(async ()=>{
         try {
             const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
                 method: "POST",
@@ -28,9 +28,8 @@ function PostForm() {
             setBody("");
         } catch (err) {
             setError(err.message);
-        } finally {
-            setLoading(false);
-        }
+            }
+        });
     }
 
     return (
