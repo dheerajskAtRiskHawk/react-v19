@@ -1,28 +1,30 @@
-import React from "react";
-import { useRef, forwardRef } from "react";
+import React, { createContext, useContext } from "react";
 
+// 1. Create context
+const ThemeContext = createContext("light");
 
-const InputField = (props, ref) => {
-  return <input className="form-control mb-2" ref={ref} {...props}/>;
+// 2. Create provider and provider is updating the value to dark.
+// const ThemeProvider = ({ children }) => {
+//   return (
+//     <ThemeContext.Provider value="dark">
+//       {children}
+//     </ThemeContext.Provider>
+//   );
+// };
+
+// 3. Create a component that uses the context
+const ThemedComponent = () => {
+  const theme = useContext(ThemeContext);
+  return <p>Current theme: {theme}</p>;
 };
 
-
-export default function App() {
-
-  const inputRef = useRef(null); //placeholder to store the reference of element.
-
-  const focusInput = ()=>{
-    console.log('focusInput');
-    if(inputRef.current){
-      inputRef.current.focus();
-    }
-    // get the reference of input from child component. and call focus method on it.
-  }
- 
-return (
-    <div className="container">
-      <InputField ref={inputRef} placeholder="Type here..." />
-      <button onClick={focusInput} >Focus Input</button>
-    </div>
+// 4. Wrap the component tree with the provider
+const App = () => {
+  return (
+    <ThemeContext value="dark">
+      <ThemedComponent />
+    </ThemeContext>
   );
-}
+};
+
+export default App;
